@@ -1,8 +1,9 @@
 {
   "name": "bb-component-SuperFieldNetwork",
-  "version": "1.0.0",
+  "version": "1.0.0-Beta",
   "description": "A Network Input Field for Budibase",
   "license": "MIT",
+  "author": { "name": "Michael Poirazi"},
   "svelte": "index.js",
   "module": "dist/plugin.min.js",
   "scripts": {
