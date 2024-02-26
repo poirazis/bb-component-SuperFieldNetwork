@@ -1,0 +1,191 @@
+{
+  "type": "component",
+  "metadata": {},
+  "schema": {
+    "name": "bb-component-SuperFieldNetwork",
+    "friendlyName": "Super Field - Network",
+    "description": "A Network Address Input Field for Budibase",
+    "author" : {"name": "Michael Poirazi", "url" : "https://github.com/poirazis"},
+    "icon": "GlobeGrid",
+    "requiredAncestors": ["form"],
+    "block" : true,
+    "ejectable" : false,
+    "context" : [
+      {
+        "type": "static",
+        "values": [
+          {
+            "label": "Value",
+            "key": "value",
+            "type": "string"
+          } 
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "field/string",
+        "label": "Field",
+        "key": "field",
+        "required": true
+      },
+      {
+        "type": "text",
+        "label": "Label",
+        "key": "label"
+      },
+      {
+        "type": "text",
+        "label": "Placeholder",
+        "key": "placeholder"
+      },
+      {
+        "type": "text",
+        "label": "Default value",
+        "key": "defaultValue",
+        "supportsConditions": false
+      },
+      {
+        "type": "text",
+        "label": "Formatted value",
+        "key": "template",
+        "placeholder" : "{{ Value }}",
+        "supportsConditions": false,
+        "nested" : true
+      },
+      {
+        "type": "text",
+        "label": "Help text",
+        "key": "helpText"
+      },
+      {
+        "type": "text",
+        "label": "Input Mask",
+        "key": "mask",
+        "hidden" : true
+      },
+      {
+        "type": "validation/string",
+        "label": "Validation",
+        "key": "validation"
+      },
+      {
+        "type": "event",
+        "label": "On change",
+        "key": "onChange",
+        "context": [
+          {
+            "label": "Field Value",
+            "key": "value"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "label": "Debounced",
+        "key": "debounced",
+        "defaultValue": false
+      },
+      {
+        "type": "boolean",
+        "label": "Suggestions",
+        "key": "showSuggestions",
+        "hidden" : true,
+        "defaultValue": false
+      },
+      {
+        "type": "number",
+        "label": "Debounce Delay (ms)",
+        "key": "debounceDelay",
+        "minValue" : "200",
+        "defaultValue": 750,
+        "dependsOn": "debounced"
+      },
+      {
+        "type": "boolean",
+        "label": "Disabled",
+        "key": "disabled",
+        "defaultValue": false
+      },
+      {
+        "type": "boolean",
+        "label": "Read only",
+        "key": "readonly",
+        "defaultValue": false,
+        "dependsOn": {
+          "setting": "disabled",
+          "value": true,
+          "invert": true
+        }
+      },
+      {
+        "type" : "boolean",
+        "key"  : "clearValueIcon",
+        "label": "Clear Value Icon"
+      },
+      {
+        "type" : "boolean",
+        "key"  : "showIcon",
+        "label": "Add Inline Icon"
+      },
+      {
+        "type" : "icon",
+        "key"  : "icon",
+        "label": "Icon",
+        "resetOn" : "showIcon",
+        "dependsOn" : "showIcon"
+      },
+      {
+        "type" : "boolean",
+        "key"  : "customButtons",
+        "label": "Add Buttons"
+      },
+      {
+        "type" : "buttonConfiguration",
+        "key"  : "buttons",
+        "nested" : true,
+        "dependsOn" : "customButtons"
+      },
+      {
+        "tag" : "style",
+        "type" : "select",
+        "key" : "mode",
+        "label" : "Mode",
+        "defaultValue": "formInput",
+        "options" : [
+          { "label" : "Form Input", "value" : "formInput" },
+          { "label" : "Inline Input", "value" : "inlineInput" }
+        ]
+      },
+      {
+        "tag" : "style",
+        "type": "select",
+        "label": "Layout",
+        "key": "span",
+        "defaultValue": 6,
+        "showInBar": true,
+        "barStyle": "buttons",
+        "options": [
+          {
+            "label": "1 column",
+            "value": 6,
+            "barIcon": "Stop",
+            "barTitle": "1 column"
+          },
+          {
+            "label": "2 columns",
+            "value": 3,
+            "barIcon": "ColumnTwoA",
+            "barTitle": "2 columns"
+          },
+          {
+            "label": "3 columns",
+            "value": 2,
+            "barIcon": "ViewColumn",
+            "barTitle": "3 columns"
+          }
+        ]
+      }
+    ]
+  }
+}
