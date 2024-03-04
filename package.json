@@ -3,7 +3,7 @@
   "version": "1.0.0-Beta",
   "description": "A Network Input Field for Budibase",
   "license": "MIT",
-  "author": { "name": "Michael Poirazi"},
+  "author": { "name": "Michael Poirazi" },
   "svelte": "index.js",
   "module": "dist/plugin.min.js",
   "scripts": {
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@crownframework/svelte-error-boundary": "^1.0.3",
+    "cidr-calc": "^1.0.4",
     "ipaddr.js": "^2.1.0",
     "svelte": "^4.2.12"
   },

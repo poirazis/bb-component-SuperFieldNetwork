@@ -18,7 +18,12 @@
             "label": "Value",
             "key": "value",
             "type": "string"
-          } 
+          },
+          {
+            "label" : "Range",
+            "key" : "range",
+            "type" : "object"
+          }
         ]
       }
     ],

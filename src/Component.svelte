@@ -2,6 +2,7 @@
   import { getContext , onDestroy} from "svelte";
   import CellString from "../../bb_super_components_shared/src/lib/SuperTableCells/CellString.svelte";
   import ipaddr from "../node_modules/ipaddr.js"
+  import { Cidr, IpAddress, IpRange } from '../node_modules/cidr-calc/';
 
   const { styleable, Block, BlockComponent, Provider } = getContext("sdk");
   const component = getContext("component");
@@ -10,6 +11,7 @@
   const formStepContext = getContext("form-step");
   const labelPos = getContext("field-group");
   const labelWidth = getContext("field-group-label-width");
+  const groupDisabled = getContext("field-group-disabled");
   const formApi = formContext?.formApi;
 
   export let field;
@@ -69,7 +71,7 @@
   $: cellOptions = { 
       placeholder, 
       defaultValue,
-      disabled,
+      disabled: disabled || groupDisabled,
       template,
       suggestions,
       padding: "0.5rem",
@@ -115,6 +117,8 @@
           parseError = "Invalid IP / CIDR"
         }
 
+  let cidr = new Cidr(IpAddress.of('2a10:8405:8000::'), 34);
+  let ipRange = cidr.toIpRange();
 
 </script>
 
@@ -152,7 +156,7 @@
           class="spectrum-ActionGroup spectrum-ActionGroup--compact spectrum-ActionGroup--sizeM"
           class:spectrum-ActionGroup--quiet={buttonsQuiet}
         >
-          <Provider data={ {value}} >
+          <Provider data={ {value} } >
             {#each buttons as { text, onClick }}
               <BlockComponent
                 type = "plugin/bb-component-SuperButton"
