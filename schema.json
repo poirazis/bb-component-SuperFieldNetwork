@@ -10,9 +10,6 @@
       "url": "https://github.com/poirazis"
     },
     "icon": "GlobeGrid",
-    "requiredAncestors": ["form"],
-    "block": true,
-    "ejectable": false,
     "context": [
       {
         "type": "static",
@@ -35,17 +32,19 @@
         "type": "field/string",
         "label": "Field",
         "key": "field",
-        "required": true
+        "defaultValue": "Network Field"
       },
       {
         "type": "text",
         "label": "Label",
-        "key": "label"
+        "key": "label",
+        "placeholder": "Field Name"
       },
       {
         "type": "text",
         "label": "Placeholder",
-        "key": "placeholder"
+        "key": "placeholder",
+        "placeholder": "Field Name"
       },
       {
         "type": "text",
@@ -132,33 +131,20 @@
         "label": "Clear Value Icon"
       },
       {
-        "type": "boolean",
-        "key": "showIcon",
-        "label": "Add Inline Icon"
-      },
-      {
         "type": "icon",
         "key": "icon",
-        "label": "Icon",
-        "resetOn": "showIcon",
-        "dependsOn": "showIcon"
-      },
-      {
-        "type": "boolean",
-        "key": "customButtons",
-        "label": "Add Buttons"
+        "label": "Icon"
       },
       {
         "type": "buttonConfiguration",
         "key": "buttons",
-        "nested": true,
-        "dependsOn": "customButtons"
+        "nested": true
       },
       {
         "tag": "style",
         "type": "select",
-        "key": "mode",
-        "label": "Mode",
+        "key": "role",
+        "label": "Field Mode",
         "defaultValue": "formInput",
         "options": [
           { "label": "Form Input", "value": "formInput" },
@@ -168,31 +154,61 @@
       {
         "tag": "style",
         "type": "select",
-        "label": "Layout",
-        "key": "span",
-        "defaultValue": 6,
+        "label": "Label Position",
+        "key": "labelPosition",
         "showInBar": true,
         "barStyle": "buttons",
+        "defaultValue": "fieldGroup",
         "options": [
           {
-            "label": "1 column",
-            "value": 6,
-            "barIcon": "Stop",
-            "barTitle": "1 column"
+            "label": "Disabled",
+            "value": false,
+            "barIcon": "Cancel",
+            "barTitle": "Disabled"
           },
           {
-            "label": "2 columns",
-            "value": 3,
-            "barIcon": "ColumnTwoA",
-            "barTitle": "2 columns"
+            "label": "Auto",
+            "value": "fieldGroup",
+            "barIcon": "Group",
+            "barTitle": "Field Group"
           },
           {
-            "label": "3 columns",
-            "value": 2,
-            "barIcon": "ViewColumn",
-            "barTitle": "3 columns"
+            "label": "Above",
+            "value": "above",
+            "barIcon": "MarginTop",
+            "barTitle": "Above"
+          },
+          {
+            "label": "Left",
+            "value": "left",
+            "barIcon": "MarginLeft",
+            "barTitle": "Left"
           }
         ]
+      },
+      {
+        "tag": "style",
+        "type": "number",
+        "label": "Size",
+        "key": "span",
+        "defaultValue": 6,
+        "min": 2
+      },
+      {
+        "tag": "style",
+        "type": "number",
+        "label": "Debounce Delay",
+        "key": "debounceDelay",
+        "minValue": "200",
+        "defaultValue": 750,
+        "dependsOn": "debounced"
+      },
+      {
+        "tag": "style",
+        "type": "boolean",
+        "key": "showDirty",
+        "label": "Show Dirty",
+        "defaultValue": false
       }
     ]
   }

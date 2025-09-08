@@ -1,56 +1,64 @@
 <script>
   import { getContext, onDestroy } from "svelte";
-  import CellString from "../../bb_super_components_shared/src/lib/SuperTableCells/CellString.svelte";
-  import "../../bb_super_components_shared/src/lib/SuperFieldsCommon.css";
-  import ipaddr from "../node_modules/ipaddr.js";
-  import { Cidr, IpAddress, IpRange } from "../node_modules/cidr-calc/";
+  import {
+    CellString,
+    SuperField,
+    SuperButton,
+  } from "@poirazis/supercomponents-shared";
+  import ipaddr from "ipaddr.js";
+  import { Cidr, IpAddress } from "cidr-calc";
 
-  const { styleable, Block, BlockComponent, Provider } = getContext("sdk");
   const component = getContext("component");
+  const allContext = getContext("context");
 
+  const { styleable, enrichButtonActions, Provider, builderStore } =
+    getContext("sdk");
   const formContext = getContext("form");
   const formStepContext = getContext("form-step");
-  const labelPos = getContext("field-group");
+  const groupLabelPosition = getContext("field-group");
   const labelWidth = getContext("field-group-label-width");
+  const groupColumns = getContext("field-group-columns");
   const groupDisabled = getContext("field-group-disabled");
   const formApi = formContext?.formApi;
 
-  export let field;
-
-  export let customButtons;
-
-  export let buttons = [];
-  export let buttonsQuiet;
-
+  // Field properties
+  export let field = "Network Field";
   export let label;
+  export let helpText;
   export let span = 6;
   export let placeholder;
   export let defaultValue;
-  export let template;
   export let disabled;
   export let readonly;
   export let validation;
-
+  export let invisible = false;
   export let onChange;
   export let debounced;
   export let debounceDelay;
-
   export let icon;
   export let suggestions;
   export let clearValueIcon;
+  export let buttons = [];
+  export let autofocus;
+  export let labelPosition;
 
+  // Form field state
   let formField;
   let formStep;
-  let fieldState;
+  let fieldState = {};
   let fieldApi;
   let fieldSchema;
   let value;
-  let cellState;
-  let addr;
   let parseError;
 
+  // Initialize form step
   $: formStep = formStepContext ? $formStepContext || 1 : 1;
+  $: labelPos =
+    groupLabelPosition && labelPosition == "fieldGroup"
+      ? groupLabelPosition
+      : labelPosition;
 
+  // Register field with form
   $: formField = formApi?.registerField(
     field,
     "string",
@@ -61,111 +69,102 @@
     formStep
   );
 
+  // Subscribe to field state changes
   $: unsubscribe = formField?.subscribe((value) => {
-    fieldState = value?.fieldState;
+    fieldState = value?.fieldState || {};
     fieldApi = value?.fieldApi;
     fieldSchema = value?.fieldSchema;
   });
 
-  $: value = fieldState?.value ? fieldState.value : defaultValue;
+  // Update value from field state
+  $: value = fieldState?.value !== undefined ? fieldState.value : defaultValue;
+  $: error = fieldState?.error;
+
+  // Handle IP/CIDR validation
+  $: if (value) {
+    parseError = undefined;
+    if (ipaddr.isValid(value)) {
+      try {
+        ipaddr.parse(value);
+      } catch (e) {
+        parseError = "Invalid IP address";
+      }
+    } else {
+      try {
+        ipaddr.parseCIDR(value);
+      } catch (error) {
+        parseError = "Invalid IP/CIDR format";
+      }
+    }
+  }
+
+  // Cell options for the input
   $: cellOptions = {
     placeholder,
     defaultValue,
     disabled: disabled || groupDisabled,
-    template,
-    suggestions,
-    padding: "0.5rem",
     readonly: readonly || disabled,
+    padding: "0.5rem",
     icon,
-    debounce: debounced ? debounceDelay : false,
     clearValueIcon,
     error: fieldState.error || parseError,
     role: "formInput",
+    debounce: debounced ? debounceDelay || 300 : false,
+    ...(suggestions && { suggestions }),
   };
 
-  $: $component.styles = {
-    ...$component.styles,
-    normal: {
-      ...$component.styles.normal,
-      "flex-direction": labelPos == "left" ? "row" : "column",
-      gap: labelPos == "left" ? "0.5rem" : "0rem",
-      "grid-column": labelPos ? "span " + span : "span 1",
-      "--label-width":
-        labelPos == "left" ? (labelWidth ? labelWidth : "6rem") : "auto",
-    },
-  };
-
+  // Handle value changes
   const handleChange = (newValue) => {
     onChange?.({ value: newValue });
     fieldApi?.setValue(newValue);
   };
 
+  // Cleanup on component destroy
   onDestroy(() => {
-    fieldApi?.deregister();
+    fieldApi?.deregister?.();
     unsubscribe?.();
   });
 
-  $: if (value) {
-    parseError = undefined;
-    if (ipaddr.isValid(value)) addr = ipaddr.parse(value);
-    else
-      try {
-        addr = ipaddr.parseCIDR(value);
-      } catch (error) {
-        addr = undefined;
-        parseError = "Invalid IP / CIDR";
-      }
-  }
-
-  let cidr = new Cidr(IpAddress.of("2a10:8405:8000::"), 34);
-  let ipRange = cidr.toIpRange();
+  // Component styles
+  $: $component.styles = {
+    ...$component.styles,
+    normal: {
+      ...$component.styles.normal,
+      display:
+        invisible && !$builderStore.inBuilder
+          ? "none"
+          : $component.styles.normal.display,
+      opacity: invisible && $builderStore.inBuilder ? 0.6 : 1,
+      "grid-column": groupColumns ? `span ${span}` : "span 1",
+    },
+  };
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-<Block>
-  <div class="superField" use:styleable={$component.styles}>
-    {#if label}
-      <label for="superCell" class="superlabel" class:left={labelPos == "left"}>
-        {label}
-        {#if fieldState.error}
-          <div class="error" class:left={labelPos == "left"}>
-            <span>{fieldState.error}</span>
-          </div>
-        {/if}
-      </label>
+<div use:styleable={$component.styles}>
+  <Provider data={{ value }} />
+  <SuperField {labelPos} {labelWidth} {field} {label} {error} {helpText}>
+    <CellString
+      {cellOptions}
+      {value}
+      {fieldSchema}
+      {autofocus}
+      on:change={(e) => handleChange(e.detail)}
+    />
+    {#if buttons?.length}
+      <div class="inline-buttons">
+        {#each buttons as { text, onClick, quiet, type, size }}
+          <SuperButton
+            {quiet}
+            {disabled}
+            {size}
+            {type}
+            {text}
+            on:click={enrichButtonActions(onClick, $allContext)}
+          />
+        {/each}
+      </div>
     {/if}
-
-    <div class="inline-cells">
-      <CellString
-        {cellOptions}
-        {value}
-        {fieldSchema}
-        on:change={(e) => handleChange(e.detail)}
-      />
-      {#if customButtons && buttons?.length}
-        <div
-          class="spectrum-ActionGroup spectrum-ActionGroup--compact spectrum-ActionGroup--sizeM"
-          class:spectrum-ActionGroup--quiet={buttonsQuiet}
-        >
-          <Provider data={{ value }}>
-            {#each buttons as { text, onClick, icon, quiet, size }}
-              <BlockComponent
-                type="plugin/bb-component-SuperButton"
-                props={{
-                  size: "M",
-                  fillOnHover: true,
-                  quiet,
-                  disabled: disabled || fieldState.error || parseError,
-                  icon,
-                  text,
-                  onClick,
-                }}
-              ></BlockComponent>
-            {/each}
-          </Provider>
-        </div>
-      {/if}
-    </div>
-  </div>
-</Block>
+  </SuperField>
+</div>
