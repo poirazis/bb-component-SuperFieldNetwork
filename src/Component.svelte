@@ -161,7 +161,7 @@
             {size}
             {type}
             {text}
-            on:click={enrichButtonActions(onClick, $allContext)}
+            onClick={enrichButtonActions(onClick, $allContext)}
           />
         {/each}
       </div>
