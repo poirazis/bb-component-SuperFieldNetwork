@@ -1,6 +1,6 @@
 {
   "name": "bb-component-SuperFieldNetwork",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Network Input Field for Budibase",
   "packageManager": "bun@1.0.0",
   "license": "MIT",
