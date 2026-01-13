@@ -1,6 +1,8 @@
 {
   "type": "component",
-  "metadata": {},
+  "metadata": {
+    "svelteMajor": 5
+  },
   "schema": {
     "name": "bb-component-SuperFieldNetwork",
     "friendlyName": "Super Field - Network",
@@ -54,22 +56,8 @@
       },
       {
         "type": "text",
-        "label": "Formatted value",
-        "key": "template",
-        "placeholder": "{{ Value }}",
-        "supportsConditions": false,
-        "nested": true
-      },
-      {
-        "type": "text",
         "label": "Help text",
         "key": "helpText"
-      },
-      {
-        "type": "text",
-        "label": "Input Mask",
-        "key": "mask",
-        "hidden": true
       },
       {
         "type": "validation/string",
@@ -79,25 +67,12 @@
       {
         "type": "event",
         "label": "On change",
-        "key": "onChange",
-        "context": [
-          {
-            "label": "Field Value",
-            "key": "value"
-          }
-        ]
+        "key": "onChange"
       },
       {
         "type": "boolean",
         "label": "Debounced",
         "key": "debounced",
-        "defaultValue": false
-      },
-      {
-        "type": "boolean",
-        "label": "Suggestions",
-        "key": "showSuggestions",
-        "hidden": true,
         "defaultValue": false
       },
       {
@@ -131,25 +106,16 @@
         "label": "Clear Value Icon"
       },
       {
-        "type": "icon",
+        "type": "phosphorIcon",
         "key": "icon",
         "label": "Icon"
       },
       {
-        "type": "buttonConfiguration",
+        "type": "componentConfiguration",
+        "componentType": "plugin/bb-component-SuperButton",
         "key": "buttons",
-        "nested": true
-      },
-      {
-        "tag": "style",
-        "type": "select",
-        "key": "role",
-        "label": "Field Mode",
-        "defaultValue": "formInput",
-        "options": [
-          { "label": "Form Input", "value": "formInput" },
-          { "label": "Inline Input", "value": "inlineInput" }
-        ]
+        "nested": true,
+        "wide": true
       },
       {
         "tag": "style",
@@ -188,6 +154,23 @@
       },
       {
         "tag": "style",
+        "type": "select",
+        "key": "role",
+        "label": "Field Mode",
+        "defaultValue": "formInput",
+        "options": [
+          {
+            "label": "Form Input",
+            "value": "formInput"
+          },
+          {
+            "label": "Inline Input",
+            "value": "inlineInput"
+          }
+        ]
+      },
+      {
+        "tag": "style",
         "type": "number",
         "label": "Size",
         "key": "span",
@@ -196,18 +179,9 @@
       },
       {
         "tag": "style",
-        "type": "number",
-        "label": "Debounce Delay",
-        "key": "debounceDelay",
-        "minValue": "200",
-        "defaultValue": 750,
-        "dependsOn": "debounced"
-      },
-      {
-        "tag": "style",
         "type": "boolean",
-        "key": "showDirty",
-        "label": "Show Dirty",
+        "key": "invisible",
+        "label": "Invisible",
         "defaultValue": false
       }
     ]

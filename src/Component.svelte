@@ -11,8 +11,13 @@
   const component = getContext("component");
   const allContext = getContext("context");
 
-  const { styleable, enrichButtonActions, Provider, builderStore } =
-    getContext("sdk");
+  const {
+    styleable,
+    enrichButtonActions,
+    Provider,
+    builderStore,
+    processStringSync,
+  } = getContext("sdk");
   const formContext = getContext("form");
   const formStepContext = getContext("form-step");
   const groupLabelPosition = getContext("field-group");
@@ -54,7 +59,7 @@
   // Initialize form step
   $: formStep = formStepContext ? $formStepContext || 1 : 1;
   $: labelPos =
-    groupLabelPosition && labelPosition == "fieldGroup"
+    groupLabelPosition !== undefined && labelPosition == "fieldGroup"
       ? groupLabelPosition
       : labelPosition;
 
@@ -105,7 +110,7 @@
     disabled: disabled || groupDisabled,
     readonly: readonly || disabled,
     padding: "0.5rem",
-    icon,
+    icon: icon ? "ph ph-" + icon : undefined,
     clearValueIcon,
     error: fieldState.error || parseError,
     role: "formInput",
@@ -115,7 +120,7 @@
 
   // Handle value changes
   const handleChange = (newValue) => {
-    onChange?.({ value: newValue });
+    onChange?.();
     fieldApi?.setValue(newValue);
   };
 
@@ -154,14 +159,18 @@
     />
     {#if buttons?.length}
       <div class="inline-buttons">
-        {#each buttons as { text, onClick, quiet, type, size }}
+        {#each buttons as { icon, onClick, ...rest }}
           <SuperButton
-            {quiet}
-            {disabled}
-            {size}
-            {type}
-            {text}
-            on:click={enrichButtonActions(onClick, $allContext)}
+            {...rest}
+            icon={"ph ph-" + icon}
+            disabled={processStringSync(
+              rest.disabledTemplate ?? "",
+              $allContext
+            ) === true ||
+              disabled ||
+              groupDisabled ||
+              fieldState?.disabled}
+            onClick={enrichButtonActions(onClick, $allContext)}
           />
         {/each}
       </div>
